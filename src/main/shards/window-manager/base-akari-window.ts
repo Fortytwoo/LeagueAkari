@@ -310,9 +310,7 @@ export abstract class BaseAkariWindow<
         sandbox: false,
         spellcheck: false,
         partition: this._partition,
-        // Disabling this can leave hidden Windows windows with stale rendering and input state.
-        // Keep Electron's default throttling behavior unless a window has a proven need to opt out.
-        backgroundThrottling: true,
+        backgroundThrottling: false,
         additionalArguments: [`--akari-window-type=${this._namespaceSuffix}`],
         ...webPreferences
       },

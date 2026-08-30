@@ -63,8 +63,7 @@ export class AkariOngoingGameWindow extends BaseAkariWindow<
         autoHideMenuBar: true,
         backgroundColor: '#00000000',
         webPreferences: {
-          // focusable: false combined with disabled throttling loses mouse input after hide/show on Windows.
-          backgroundThrottling: true
+          backgroundThrottling: false // focusable 和 backgroundThrottling 一起使用, 会出现莫名其妙的 BUG
         }
       }
     })
