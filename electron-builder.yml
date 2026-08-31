@@ -46,6 +46,7 @@ win:
     - 7z
   executableName: LeagueAkari
   icon: resources/LA_ICON.ico
+  requestedExecutionLevel: requireAdministrator
 
 mac:
   target:

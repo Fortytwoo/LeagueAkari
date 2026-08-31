@@ -3,7 +3,7 @@
 ## Current State
 
 - **Last Updated:** 2026-08-31
-- **Current Objective:** Bundle LOLHEXGuide into League Akari and expose a launcher in the League Akari UI.
+- **Current Objective:** Require administrator privileges for packaged League Akari and make Haidou Tools launch reporting reflect the real child process state.
 - **Active Feature:** None
 - **Status:** `done`
 
@@ -15,10 +15,12 @@
 - Added feature state, cross-platform verification entrypoints, lifecycle rules, and restartable
   handoff state.
 - Completed the structural, type-check, test, syntax, and diff-hygiene gates.
+- Embedded `requireAdministrator` in the packaged League Akari executable.
+- Required a real `lolhexguide.exe` process before reporting a successful Haidou Tools launch.
 
 ## What's In Progress
 
-- Nothing. The non-elevated Haidou Tools launch fix is complete.
+- Nothing. Default elevation and launch confirmation are complete.
 
 ## What's Next
 
@@ -51,6 +53,9 @@
   `lolhexguide-main/launchOnAkariStart`, not in early bootstrap `base-config.json`.
 - `GameBoxServer.exe` declares `requireAdministrator`; use the existing elevation helper when League
   Akari is not elevated, preserve the launcher environment, and retain `EACCES` fallback handling.
+- Make packaged League Akari itself request administrator privileges so the normal Haidou Tools path
+  does not depend on a second elevation hop.
+- Do not report Haidou Tools launch success until `lolhexguide.exe` is observed.
 
 ## Files Modified This Session
 
@@ -90,6 +95,12 @@
 - Package inspection — final archive contains both LOLHEXGuide volumes (78,643,200 and 69,012,206
   bytes) and the 7-Zip extractor; packaged and source volume SHA-256 values match the resource
   manifest.
+- Follow-up `yarn typecheck` and `yarn test` — passed; 100 files and 567 tests.
+- Follow-up `yarn build:win` — passed; created a 239,093,344-byte Windows 7z package.
+- Executable manifest inspection — final `LeagueAkari.exe` contains
+  `requestedExecutionLevel level="requireAdministrator"`.
+- Packaged CDP smoke — League Akari logged administrator privileges; clicking 海斗工具 launched a
+  visible `lolhexguide` main window and logged target-process confirmation.
 
 ## Notes for Next Session
 

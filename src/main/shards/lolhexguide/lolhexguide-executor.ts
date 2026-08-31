@@ -17,6 +17,8 @@ import { LOLHEXGUIDE_RESOURCE_MANIFEST as manifest } from './resource-manifest'
 
 const execFileAsync = promisify(execFile)
 const archivePaths = [archivePart1Path, archivePart2Path]
+const launchConfirmationTimeout = 15_000
+const launchConfirmationInterval = 500
 
 export class LolHexGuideExecutor {
   private _installationPromise: Promise<string> | null = null
@@ -51,6 +53,7 @@ export class LolHexGuideExecutor {
     const executablePath = path.join(installDirectory, manifest.launcherFile)
 
     await this._spawnLauncher(executablePath, installDirectory)
+    await this._confirmLaunch()
 
     return {
       alreadyRunning: false,
@@ -198,6 +201,23 @@ export class LolHexGuideExecutor {
 
   private _isAccessDeniedError(error: unknown): error is NodeJS.ErrnoException {
     return error instanceof Error && 'code' in error && error.code === 'EACCES'
+  }
+
+  private async _confirmLaunch() {
+    const deadline = Date.now() + launchConfirmationTimeout
+
+    while (Date.now() < deadline) {
+      if (await this._isAlreadyRunning()) {
+        this._context.logger.info('Confirmed Haidou Tools process is running')
+        return
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, launchConfirmationInterval))
+    }
+
+    throw new Error(
+      'Haidou Tools did not start. Please accept the Windows administrator prompt and try again.'
+    )
   }
 
   private async _isAlreadyRunning() {
