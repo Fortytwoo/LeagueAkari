@@ -28,6 +28,20 @@
         "Type checks, tests, visual QA, and a Windows package smoke check pass with evidence recorded."
       ],
       "evidence": "2026-08-31: packaged League Akari now embeds requireAdministrator and Haidou Tools launch success waits for a real lolhexguide.exe process. Live diagnosis showed the previous non-admin path logged only an elevation request and left no target process, while elevated direct launch produced a visible window. Node/Web type checks, 100 test files and 567 tests, yarn build:win, embedded-manifest inspection, and a packaged CDP launch smoke passed. Final package: 239,093,344 bytes, SHA-256 4574453F341B5C28589D3A99A0313EFFCB8B4CE3D6C17752CA5A7E72E33B40CB."
+    },
+    {
+      "id": "bundled-lolhexguide-002",
+      "name": "Start Haidou Tools directly without launching WeGame",
+      "description": "Patch the bundled Haidou Tools runtime reproducibly so League Akari starts its services in one click and never launches WeGame automatically.",
+      "dependencies": ["bundled-lolhexguide-001"],
+      "status": "done",
+      "doneCriteria": [
+        "The bundled runtime invokes the existing startTool flow automatically after its launch page is ready.",
+        "The domestic client-handling path no longer calls launchWeGameLOL when LoL and WeGame are absent.",
+        "The patched vendor resource is versioned so existing League Akari installations extract the new payload.",
+        "Patch verification, type checks, tests, Windows packaging, and a packaged one-click smoke check pass."
+      ],
+      "evidence": "2026-08-31: added a deterministic app.asar patch that auto-invokes the existing startTool flow, makes concurrent starts share one promise, and removes the launchWeGameLOL fallback. Rebuilt the payload as 00.00.00.38-akari.1; two independent preparations produced identical volume hashes. Archive and installed-runtime verification, Node/Web type checks, 100 test files and 567 tests, yarn build:win, packaged CDP launch, and Windows window/process inspection passed. One Akari click created and then automatically hid the lolhexguide window while its background process tree remained active. The WeGame process snapshot stayed unchanged at the existing wegame_env.exe PID 12820 with its original 19:55:39 start time. Final package: 239,027,869 bytes, SHA-256 35C64267431437A7831A36DCA52CF2751F255A99BF77A21021E9EAEB5326E6E6."
     }
   ]
 }

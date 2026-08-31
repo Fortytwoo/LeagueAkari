@@ -2,9 +2,9 @@
 
 ## Current Objective
 
-- **Goal:** Bundle LOLHEXGuide into League Akari with reliable elevated launch behavior.
-- **Current status:** `bundled-lolhexguide-001` is complete; no feature is active.
-- **Branch / commit:** `dev`; follow-up started from `72858a87`.
+- **Goal:** Run the bundled Haidou Tools services from one League Akari click without launching WeGame.
+- **Current status:** `bundled-lolhexguide-002` is complete; no feature is active.
+- **Branch / commit:** `dev`; follow-up started from `9e108e6f`.
 - **Last Updated:** 2026-08-31
 
 ## Completed This Session
@@ -25,34 +25,48 @@
   direct spawn remains for an already elevated League Akari process.
 - Made packaged League Akari request administrator privileges at process startup.
 - Made launcher success depend on observing the real `lolhexguide.exe` target process.
+- Added a reproducible patch for the vendor `app.asar` that auto-runs its existing `startTool` flow
+  and serializes concurrent starts.
+- Disabled the vendor fallback that launches WeGame when no LoL or WeGame window is found.
+- Rebuilt the bundled payload as `00.00.00.38-akari.1` so existing installs receive the patch.
 - Verified the development app and packaged app through the configured CDP workflow.
 
 ## Verification Evidence
 
-| Check                | Command                           | Result  | Notes                                       |
-| -------------------- | --------------------------------- | ------- | ------------------------------------------- |
-| Harness structure    | `validate-harness.mjs --target .` | Passed  | 100/100; five subsystems at 5/5.            |
-| Standard gate        | `.\init.ps1`                      | Passed  | Yarn skip-build install, typecheck, tests.  |
-| Type checks          | `yarn typecheck`                  | Passed  | Node and renderer reported no errors.       |
-| Test suite           | `yarn test`                       | Passed  | 99 files and 564 tests passed.              |
-| Script syntax        | Bash and PowerShell parsers       | Passed  | Both entrypoints parse successfully.        |
-| Diff hygiene         | `git diff --check`                | Passed  | No whitespace errors.                       |
-| Full native install  | `yarn install --immutable`        | Blocked | Visual Studio C++ workload not detected.    |
-| LOLHEXGuide resource | prepare script and `7za t`        | Passed  | 216 files; archive SHA-256 recorded.        |
-| Full test suite      | `yarn test`                       | Passed  | 100 files and 567 tests.                    |
-| Settings persistence | toggle, restart, inspect          | Passed  | Value restored and auto-launch executed.    |
-| Elevation smoke      | `elevate.exe GameBoxServer.exe`   | Passed  | Exit 0; complete process tree launched.     |
-| Windows package      | `yarn build:win`                  | Passed  | 239,114,414-byte 7z artifact.               |
-| Packaged smoke       | CDP sidebar launch                | Passed  | Launch succeeded; settings row visible.     |
-| Follow-up typecheck  | `yarn typecheck`                  | Passed  | Node and renderer reported no errors.       |
-| Follow-up tests      | `yarn test`                       | Passed  | 100 files and 567 tests passed.             |
-| Elevated package     | Manifest inspection               | Passed  | Final exe requests administrator access.    |
-| Confirmed launch     | Packaged CDP sidebar launch       | Passed  | Visible target window and process observed. |
+| Check                | Command                           | Result  | Notes                                        |
+| -------------------- | --------------------------------- | ------- | -------------------------------------------- |
+| Harness structure    | `validate-harness.mjs --target .` | Passed  | 100/100; five subsystems at 5/5.             |
+| Standard gate        | `.\init.ps1`                      | Passed  | Yarn skip-build install, typecheck, tests.   |
+| Type checks          | `yarn typecheck`                  | Passed  | Node and renderer reported no errors.        |
+| Test suite           | `yarn test`                       | Passed  | 99 files and 564 tests passed.               |
+| Script syntax        | Bash and PowerShell parsers       | Passed  | Both entrypoints parse successfully.         |
+| Diff hygiene         | `git diff --check`                | Passed  | No whitespace errors.                        |
+| Full native install  | `yarn install --immutable`        | Blocked | Visual Studio C++ workload not detected.     |
+| LOLHEXGuide resource | prepare script and `7za t`        | Passed  | 216 files; archive SHA-256 recorded.         |
+| Full test suite      | `yarn test`                       | Passed  | 100 files and 567 tests.                     |
+| Settings persistence | toggle, restart, inspect          | Passed  | Value restored and auto-launch executed.     |
+| Elevation smoke      | `elevate.exe GameBoxServer.exe`   | Passed  | Exit 0; complete process tree launched.      |
+| Windows package      | `yarn build:win`                  | Passed  | 239,114,414-byte 7z artifact.                |
+| Packaged smoke       | CDP sidebar launch                | Passed  | Launch succeeded; settings row visible.      |
+| Follow-up typecheck  | `yarn typecheck`                  | Passed  | Node and renderer reported no errors.        |
+| Follow-up tests      | `yarn test`                       | Passed  | 100 files and 567 tests passed.              |
+| Elevated package     | Manifest inspection               | Passed  | Final exe requests administrator access.     |
+| Confirmed launch     | Packaged CDP sidebar launch       | Passed  | Visible target window and process observed.  |
+| Runtime patch        | Patch and archive verify commands | Passed  | Auto-start and WeGame guard present.         |
+| Reproducible volumes | Two resource preparation runs     | Passed  | Both volume hashes remained identical.       |
+| One-click smoke      | CDP and Windows inspection        | Passed  | No second click; background services active. |
+| WeGame suppression   | Pre/post process snapshot         | Passed  | No new WeGame or TGP process appeared.       |
 
 ## Files Changed
 
 - `electron-builder.yml`
 - `src/main/shards/lolhexguide/lolhexguide-executor.ts`
+- `src/main/shards/lolhexguide/resource-manifest.ts`
+- `scripts/prepare-lolhexguide-resource.ps1`
+- `scripts/patch-lolhexguide-runtime.cjs`
+- `resources/bundled/lolhexguide/manifest.json`
+- `resources/bundled/lolhexguide/lolhexguide-00.00.00.38-akari.1.7z.001`
+- `resources/bundled/lolhexguide/lolhexguide-00.00.00.38-akari.1.7z.002`
 - `AGENTS.md`
 - `feature_list.json`
 - `progress.md`
@@ -76,6 +90,10 @@
 - Packaged League Akari runs elevated by default; the helper remains only as a fallback for dev or
   nonstandard launch paths.
 - An elevation-helper exit is not launch success; confirm `lolhexguide.exe` before notifying users.
+- Patch vendor runtime files only in a temporary staging copy and fail closed if an expected compiled
+  source marker is missing or ambiguous.
+- Preserve the vendor service process while automatically invoking its start flow and removing only
+  the automatic WeGame launch action.
 
 ## Blockers / Risks
 

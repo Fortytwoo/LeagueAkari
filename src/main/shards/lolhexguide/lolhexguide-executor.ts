@@ -1,6 +1,6 @@
 import extractorPath from '@resources/bundled/lolhexguide/7za.exe?asset&asarUnpack'
-import archivePart1Path from '@resources/bundled/lolhexguide/lolhexguide-00.00.00.38.7z.001?asset&asarUnpack'
-import archivePart2Path from '@resources/bundled/lolhexguide/lolhexguide-00.00.00.38.7z.002?asset&asarUnpack'
+import archivePart1Path from '@resources/bundled/lolhexguide/lolhexguide-00.00.00.38-akari.1.7z.001?asset&asarUnpack'
+import archivePart2Path from '@resources/bundled/lolhexguide/lolhexguide-00.00.00.38-akari.1.7z.002?asset&asarUnpack'
 import elevateExecutablePath from '@resources/elevate.exe?asset&asarUnpack'
 import type { LolHexGuideLaunchResult, LolHexGuideStatus } from '@shared/types/lolhexguide'
 import { app } from 'electron'

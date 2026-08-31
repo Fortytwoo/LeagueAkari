@@ -3,7 +3,7 @@
 ## Current State
 
 - **Last Updated:** 2026-08-31
-- **Current Objective:** Require administrator privileges for packaged League Akari and make Haidou Tools launch reporting reflect the real child process state.
+- **Current Objective:** Start the bundled Haidou Tools services from one League Akari click without automatically launching WeGame.
 - **Active Feature:** None
 - **Status:** `done`
 
@@ -17,10 +17,13 @@
 - Completed the structural, type-check, test, syntax, and diff-hygiene gates.
 - Embedded `requireAdministrator` in the packaged League Akari executable.
 - Required a real `lolhexguide.exe` process before reporting a successful Haidou Tools launch.
+- Added a deterministic vendor-runtime patch that automatically invokes the existing `startTool`
+  flow and disables the `launchWeGameLOL()` fallback.
+- Versioned the patched resource as `00.00.00.38-akari.1` so existing installations refresh it.
 
 ## What's In Progress
 
-- Nothing. Default elevation and launch confirmation are complete.
+- Nothing. One-click service startup and WeGame launch suppression are complete.
 
 ## What's Next
 
@@ -56,6 +59,10 @@
 - Make packaged League Akari itself request administrator privileges so the normal Haidou Tools path
   does not depend on a second elevation hop.
 - Do not report Haidou Tools launch success until `lolhexguide.exe` is observed.
+- Keep the original vendor directory immutable; patch a temporary `app.asar` copy during resource
+  preparation and verify the resulting archive before packaging.
+- Preserve the vendor service process, but let its renderer invoke `startTool` once on mount and
+  prevent the runtime from calling `launchWeGameLOL()`.
 
 ## Files Modified This Session
 
@@ -101,6 +108,14 @@
   `requestedExecutionLevel level="requireAdministrator"`.
 - Packaged CDP smoke — League Akari logged administrator privileges; clicking 海斗工具 launched a
   visible `lolhexguide` main window and logged target-process confirmation.
+- Patched archive verification — extracted the final bundled `app.asar` and confirmed the automatic
+  `startTool` effect, shared start promise, and WeGame launch guard.
+- Deterministic resource preparation — two runs produced identical SHA-256 hashes for both volumes.
+- One-click packaged smoke — the transient `lolhexguide` window appeared and hid automatically while
+  its background process tree remained active; no second click was performed.
+- WeGame suppression smoke — the pre/post process snapshot remained the same existing
+  `wegame_env.exe` PID `12820`, with no new WeGame or TGP process.
+- Final `yarn typecheck`, `yarn test`, and `yarn build:win` — passed; 100 files and 567 tests.
 
 ## Notes for Next Session
 
