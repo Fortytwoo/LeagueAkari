@@ -36,6 +36,65 @@ Do not rely on memory for these areas; read the skill first and follow its curre
 
 ---
 
+## Startup Workflow
+
+Before writing code:
+
+1. Confirm the repository and branch with `git status --short --branch`.
+2. Read `AGENTS.md`, `feature_list.json`, `progress.md`, and `session-handoff.md`.
+3. Select or add exactly one feature in `feature_list.json` and set its status to `in-progress`.
+4. Run `./init.sh` on Bash/macOS/Linux or `.\init.ps1` on Windows PowerShell.
+5. Read the project-specific skill required by the task before touching governed architecture.
+
+If the baseline gate fails, record the command and failure in `progress.md`. Fix it only when it is
+in scope; otherwise preserve the evidence and tell the user before claiming completion.
+
+## Harness State and Scope
+
+- **One feature at a time**: only one entry in `feature_list.json` may be `in-progress` unless the
+  user explicitly defines independent ownership boundaries.
+- **Status is explicit**: use `not-started`, `in-progress`, `blocked`, or `done`.
+- **Stay in scope**: do not repair unrelated failures or modify unrelated files.
+- `feature_list.json` is the feature-state source of truth; keep dependencies, done criteria, and
+  verification evidence with the feature.
+- `progress.md` records the current objective and chronological work evidence.
+- `session-handoff.md` is the restartable summary for the next session.
+
+## Definition of Done
+
+A feature is done only when all of the following are true:
+
+- The agreed behavior and the feature's `doneCriteria` are satisfied.
+- Every file included in the change is formatted with the repository formatter.
+- Relevant focused checks and the standard harness verification have passed, or an explicitly
+  accepted limitation is recorded with its exact failure.
+- Verification evidence is recorded in `feature_list.json` and `progress.md`.
+- `session-handoff.md` identifies changed files, decisions, blockers, and the recommended next step.
+- The working tree contains no unexplained or unrelated changes introduced by the feature.
+
+## End of Session
+
+Before ending or handing off work:
+
+1. Update the active feature status and evidence in `feature_list.json`.
+2. Update `progress.md` with what changed, exact verification results, and what remains.
+3. Refresh `session-handoff.md` so the repository is restartable without chat history.
+4. Re-run the relevant gate and inspect `git diff --check` plus `git status --short`.
+5. Do not commit, push, publish, or deploy unless the user requested it.
+
+## Verification Commands
+
+- Full local gate: `./init.sh` or `.\init.ps1`
+- Type checks: `yarn typecheck`
+- Tests: `yarn test`
+- Production build when packaging or build behavior changes: `yarn build`
+- Native/runtime dependency gate: `yarn install --immutable` followed by the relevant Electron,
+  native-addon, or packaged-app smoke check. On Windows this requires a compatible Visual Studio C++
+  workload. The standard gate uses Yarn's `--mode=skip-build` so non-native work is not blocked by
+  platform toolchains.
+
+---
+
 ## PR Workflow
 
 When preparing or updating a pull request, follow the requirements in `PR_REQUIREMENTS.md` first.

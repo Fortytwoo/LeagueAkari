@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "features": [
+    {
+      "id": "harness-001",
+      "name": "Complete repository agent harness",
+      "description": "Add restartable state, verification, scope, and lifecycle artifacts without changing application behavior.",
+      "dependencies": [],
+      "status": "done",
+      "doneCriteria": [
+        "AGENTS.md routes startup, scope, definition of done, verification, and handoff workflows.",
+        "feature_list.json, progress.md, session-handoff.md, init.sh, and init.ps1 exist and contain repository-specific guidance.",
+        "The harness validator passes and the repository verification result is recorded."
+      ],
+      "evidence": "2026-08-31: harness validator 100/100; .\\init.ps1 passed Yarn immutable resolution in skip-build mode, Node/Web type checks, and Vitest (99 files, 564 tests); JSON and Bash/PowerShell syntax checks passed; git diff --check clean. Full native dependency build remains environment-gated by the Visual Studio C++ workload and is documented separately."
+    }
+  ]
+}
