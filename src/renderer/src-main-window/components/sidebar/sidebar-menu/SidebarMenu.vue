@@ -9,7 +9,7 @@
         <div
           class="menu-item"
           :data-key="item.key"
-          @click="item.isDisabled ? undefined : handleMenuChange(item.key)"
+          @click="item.isDisabled ? undefined : handleItemClick(item)"
           :class="{ active: currentActiveItem === item.key, disabled: item.isDisabled }"
         >
           <div class="menu-item__inner">
@@ -56,6 +56,7 @@ const {
     show?: boolean
     inProgress?: boolean
     isDisabled?: boolean
+    action?: () => void | Promise<void>
   }[]
 }>()
 
@@ -92,6 +93,15 @@ const updateIndicatorTarget = (key?: string) => {
 const handleMenuChange = (key: string) => {
   updateIndicatorTarget(key)
   currentActiveItem.value = key
+}
+
+const handleItemClick = (item: (typeof showItems.value)[number]) => {
+  if (item.action) {
+    void item.action()
+    return
+  }
+
+  handleMenuChange(item.key)
 }
 
 onMounted(updateIndicatorTarget)

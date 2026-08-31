@@ -13,6 +13,21 @@
         "The harness validator passes and the repository verification result is recorded."
       ],
       "evidence": "2026-08-31: harness validator 100/100; .\\init.ps1 passed Yarn immutable resolution in skip-build mode, Node/Web type checks, and Vitest (99 files, 564 tests); JSON and Bash/PowerShell syntax checks passed; git diff --check clean. Full native dependency build remains environment-gated by the Visual Studio C++ workload and is documented separately."
+    },
+    {
+      "id": "bundled-lolhexguide-001",
+      "name": "Bundle and launch LOLHEXGuide from League Akari",
+      "description": "Package LOLHEXGuide as the user-facing Haidou Tools resource, add a Windows-only launch shard, expose a sidebar quick action beside Automation, and persist launch-on-start through League Akari settings.",
+      "dependencies": ["harness-001"],
+      "status": "done",
+      "doneCriteria": [
+        "League Akari packages a reproducible LOLHEXGuide resource with version and integrity metadata.",
+        "A Windows-only main shard installs and launches LOLHEXGuide through GameBoxServer.exe with the required launch-chain environment.",
+        "The League Akari renderer exposes a localized Haidou Tools quick action beside Automation with loading, success, unsupported, and failure states.",
+        "The App settings page persists a launch-with-League-Akari option through the existing typed SQLite settings system.",
+        "Type checks, tests, visual QA, and a Windows package smoke check pass with evidence recorded."
+      ],
+      "evidence": "2026-08-31: generated a 147,655,406-byte integrity-checked LOLHEXGuide 00.00.00.38 resource split into 78,643,200-byte and 69,012,206-byte Git volumes; added Windows-only main/renderer shards, a localized Haidou Tools sidebar action beside Automation, and a launch-on-start App setting stored as lolhexguide-main/launchOnAkariStart in LeagueAkari.db; type checks and Vitest passed (100 files, 566 tests); development restart proved persistence and automatic launch; development and packaged-app CDP smoke checks launched the application and prevented duplicate GameBoxServer instances; yarn build:win produced dist/League Akari-1.5.2-beta-win.7z (239,112,909 bytes), packaged volume hashes matched the source manifest, and split extraction reproduced the expected launcher SHA-256."
     }
   ]
 }

@@ -185,6 +185,7 @@ navigation:
       match-history: Match History
       ongoing-game: Ongoing Game
       automation: Automation
+      haidou-tools: Haidou Tools
       toolkit: Toolkit
       test: Test
     status:
@@ -207,6 +208,11 @@ navigation:
         ready: Restart to update
       respawnTimer:
         detail: Respawn in {{seconds}} s ({{totalSeconds}} s)
+    haidouTools:
+      launched: Haidou Tools launched
+      installedAndLaunched: Haidou Tools was installed and launched
+      alreadyRunning: Haidou Tools is already running
+      launchFailed: 'Failed to launch Haidou Tools: {{reason}}'
 startup:
   launcher:
     tcls: TCLS Client

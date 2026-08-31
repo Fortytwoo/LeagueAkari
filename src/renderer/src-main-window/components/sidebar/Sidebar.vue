@@ -52,17 +52,19 @@ import AkariLogo from '@renderer-shared/assets/icon/AkariLogo.vue'
 import { useInstance } from '@renderer-shared/shards'
 import { useAppCommonStore } from '@renderer-shared/shards/app-common/store'
 import { useLeagueClientStore } from '@renderer-shared/shards/league-client/store'
+import { LolHexGuideRenderer } from '@renderer-shared/shards/lolhexguide'
 import { useOngoingGameStore } from '@renderer-shared/shards/ongoing-game/store'
 import { WindowManagerRenderer } from '@renderer-shared/shards/window-manager'
 import { ToolFilled as ToolFilledIcon } from '@vicons/antd'
 import {
   AnimalRabbit28Filled as AnimalRabbit28FilledIcon,
   Flash20Filled as Flash20FilledIcon,
-  Games24Filled as Games24FilledIcon
+  Games24Filled as Games24FilledIcon,
+  Rocket24Filled as Rocket24FilledIcon
 } from '@vicons/fluent'
 import { AnalyticsRound as AnalyticsRoundIcon } from '@vicons/material'
 import { useTranslation } from 'i18next-vue'
-import { NIcon } from 'naive-ui'
+import { NIcon, useMessage } from 'naive-ui'
 import {
   Component as ComponentC,
   computed,
@@ -86,6 +88,8 @@ const ogs = useOngoingGameStore()
 const mui = useMainWindowUiStore()
 const lcs = useLeagueClientStore()
 const wm = useInstance(WindowManagerRenderer)
+const haidouTools = useInstance(LolHexGuideRenderer)
+const message = useMessage()
 const sidebarEl = useTemplateRef('app-sidebar')
 
 const MAIN_WINDOW_TRAFFIC_LIGHT_DEFAULT_POSITION = {
@@ -110,6 +114,29 @@ const shouldShowOngoingGameBadge = ref(false)
 const isInCombatPhase = computed(() => {
   return ogs.queryStage.phase !== 'unavailable' && ogs.queryStage.phase !== 'lobby'
 })
+
+const haidouToolsLaunching = ref(false)
+const handleLaunchHaidouTools = async () => {
+  if (haidouToolsLaunching.value) {
+    return
+  }
+
+  haidouToolsLaunching.value = true
+  try {
+    const result = await haidouTools.launch()
+    message.success(
+      result.alreadyRunning
+        ? t('navigation.sidebar.haidouTools.alreadyRunning')
+        : result.installedNow
+          ? t('navigation.sidebar.haidouTools.installedAndLaunched')
+          : t('navigation.sidebar.haidouTools.launched')
+    )
+  } catch (error: any) {
+    message.warning(t('navigation.sidebar.haidouTools.launchFailed', { reason: error.message }))
+  } finally {
+    haidouToolsLaunching.value = false
+  }
+}
 
 const toggleCollapse = () => {
   mui.frontendSettings.sidebarCollapsed = !mui.frontendSettings.sidebarCollapsed
@@ -187,6 +214,14 @@ const menu = computed(() => {
       key: 'automation',
       icon: renderIcon(Flash20FilledIcon),
       name: t('navigation.sidebar.menu.automation')
+    },
+    {
+      key: 'haidou-tools',
+      icon: renderIcon(Rocket24FilledIcon),
+      name: t('navigation.sidebar.menu.haidou-tools'),
+      inProgress: haidouToolsLaunching.value,
+      isDisabled: !as.isWindows || haidouToolsLaunching.value,
+      action: handleLaunchHaidouTools
     },
     {
       key: 'toolkit',

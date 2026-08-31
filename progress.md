@@ -3,8 +3,8 @@
 ## Current State
 
 - **Last Updated:** 2026-08-31
-- **Current Objective:** Complete the repository's coding-agent harness.
-- **Active Feature:** None; `harness-001` is complete.
+- **Current Objective:** Bundle LOLHEXGuide into League Akari and expose a launcher in the League Akari UI.
+- **Active Feature:** None
 - **Status:** `done`
 
 ## What's Done
@@ -18,19 +18,20 @@
 
 ## What's In Progress
 
-- Nothing. No feature is currently `in-progress`.
+- Nothing. `bundled-lolhexguide-001` is complete.
 
 ## What's Next
 
-1. For the next implementation request, add a concrete feature or select an existing unfinished one.
-2. Set exactly one feature to `in-progress` before editing.
-3. Run `.\init.ps1` or `./init.sh` to establish the new session baseline.
+1. Select a new feature before making additional application changes.
 
 ## Blockers / Risks
 
 - The full native dependency command `yarn install --immutable` cannot build `better-sqlite3` on
   this Windows host because node-gyp cannot detect a Visual Studio C++ workload. This does not block
   the standard non-native gate; native/runtime and packaging work still requires that toolchain.
+- LOLHEXGuide adds about 141 MiB compressed to the application resources. It is stored as two
+  ordinary Git archive volumes below GitHub's per-file size limit because public forks cannot add
+  new Git LFS objects.
 
 ## Decisions Made
 
@@ -40,6 +41,14 @@
 - Use immutable Yarn installation with `--mode=skip-build`, type checking, and Vitest as the standard
   local gate. Require a full native install and matching runtime smoke check for Electron native or
   packaging changes.
+- Package LOLHEXGuide as versioned 7z volumes, validate every volume and the launcher before first
+  use, and install it under `<userData>/bundled-apps/lolhexguide/<version>`.
+- Keep LOLHEXGuide Windows-only and detect a running `lolhexguide.exe` before starting another
+  `GameBoxServer.exe`.
+- Expose the product name as `海斗工具` / `Haidou Tools`; keep LOLHEXGuide only as the internal
+  resource and compatibility namespace.
+- Store `launchOnAkariStart` in the typed SQLite settings system under
+  `lolhexguide-main/launchOnAkariStart`, not in early bootstrap `base-config.json`.
 
 ## Files Modified This Session
 
@@ -62,6 +71,19 @@
   `AGENTS.md`.
 - Full `yarn install --immutable` — blocked before typecheck/test because `better-sqlite3` requires a
   Visual Studio C++ workload; exact boundary is documented above and in `session-handoff.md`.
+- `yarn typecheck:node` and `yarn typecheck:web` — passed.
+- `yarn test` — passed: 100 files, 566 tests.
+- Development-mode CDP smoke test — `海斗工具` appears directly beside `自动操作`; clicking it
+  launched `GameBoxServer.exe` plus the LOLHEXGuide Electron process tree.
+- Settings persistence smoke test — changed `lolhexguide-main/launchOnAkariStart` from false to
+  true, verified the saved value, restarted League Akari, observed automatic launch, then restored
+  the test value to false.
+- Packaged-app CDP smoke test — sidebar launcher and App settings row are visible and functional;
+  repeat click kept one `GameBoxServer.exe` instance.
+- `yarn build:win` — passed; created `dist/League Akari-1.5.2-beta-win.7z` (239,112,909 bytes).
+- Package inspection — final archive contains both LOLHEXGuide volumes (78,643,200 and 69,012,206
+  bytes) and the 7-Zip extractor; packaged and source volume SHA-256 values match the resource
+  manifest.
 
 ## Notes for Next Session
 

@@ -125,6 +125,26 @@
         </SettingsRow>
       </SettingsSection>
       <SettingsSection
+        setting-id="app.haidou-tools"
+        :title="t('settings.app.haidouTools.title')"
+        :footer="as.isWindows ? undefined : t('settings.app.haidouTools.windowsOnly')"
+      >
+        <SettingsRow
+          setting-id="app.haidou-tools.launch-on-start"
+          :label="t('settings.app.haidouTools.launchOnStart.label')"
+          :label-description="t('settings.app.haidouTools.launchOnStart.description')"
+          :label-width="400"
+          :disabled="!as.isWindows"
+        >
+          <NSwitch
+            size="small"
+            :value="lts.settings.launchOnAkariStart"
+            :disabled="!as.isWindows"
+            @update:value="(val: boolean) => haidouTools.setLaunchOnAkariStart(val)"
+          />
+        </SettingsRow>
+      </SettingsSection>
+      <SettingsSection
         setting-id="app.self-update"
         :title="t('settings.app.selfUpdate.title')"
         :footer="
@@ -504,6 +524,8 @@ import { useLeagueClientUxStore } from '@renderer-shared/shards/league-client-ux
 import { useLeagueClientStore } from '@renderer-shared/shards/league-client/store'
 import { LoggerRenderer } from '@renderer-shared/shards/logger'
 import { useLoggerStore } from '@renderer-shared/shards/logger/store'
+import { LolHexGuideRenderer } from '@renderer-shared/shards/lolhexguide'
+import { useLolHexGuideStore } from '@renderer-shared/shards/lolhexguide/store'
 import { SelfUpdateRenderer } from '@renderer-shared/shards/self-update'
 import { useSelfUpdateStore } from '@renderer-shared/shards/self-update/store'
 import { useSgpStore } from '@renderer-shared/shards/sgp/store'
@@ -560,6 +582,7 @@ const wms = useWindowManagerStore()
 const as = useAppCommonStore()
 const mws = useMainWindowStore()
 const ls = useLoggerStore()
+const lts = useLolHexGuideStore()
 const su = useInstance(SelfUpdateRenderer)
 const wm = useInstance(WindowManagerRenderer)
 const mui = useInstance(MainWindowUiRenderer)
@@ -568,6 +591,7 @@ const lcu = useInstance(LeagueClientUxRenderer)
 const lc = useInstance(LeagueClientRenderer)
 const lg = useInstance(LoggerRenderer)
 const sn = useInstance(SimpleNotificationsRenderer)
+const haidouTools = useInstance(LolHexGuideRenderer)
 
 useAkariNavigationStep<AppSettingsNavigationPayload>({
   key: APP_SETTINGS_NAVIGATION_STEP_KEY,

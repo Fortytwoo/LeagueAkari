@@ -93,6 +93,12 @@ settings:
         label: Update Directory
         description: The current location of the downloaded update. If the complete auto-update process cannot be executed, manual update is required
         open: Open
+    haidouTools:
+      title: Haidou Tools
+      windowsOnly: Haidou Tools is currently available only on Windows.
+      launchOnStart:
+        label: Launch with League Akari
+        description: Automatically install Haidou Tools when needed and launch it after League Akari starts
     mainWindowUi:
       title: Main Window UI
       background:

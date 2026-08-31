@@ -184,6 +184,7 @@ navigation:
       match-history: 战绩
       ongoing-game: 对局
       automation: 自动操作
+      haidou-tools: 海斗工具
       toolkit: 工具集
       test: 测试
     status:
@@ -206,6 +207,11 @@ navigation:
         ready: 重启更新
       respawnTimer:
         detail: 距离重生 {{seconds}} s（{{totalSeconds}} s）
+    haidouTools:
+      launched: 海斗工具已启动
+      installedAndLaunched: 海斗工具已完成首次安装并启动
+      alreadyRunning: 海斗工具已在运行
+      launchFailed: 启动海斗工具失败：{{reason}}
 startup:
   launcher:
     tcls: TCLS 客户端

@@ -93,6 +93,12 @@ settings:
         label: 更新目录
         description: 当前更新已下载的位置，若无法执行完整的自动更新流程，则需要手动更新
         open: 打开
+    haidouTools:
+      title: 海斗工具
+      windowsOnly: 海斗工具当前仅支持 Windows。
+      launchOnStart:
+        label: 随 League Akari 启动
+        description: League Akari 启动后自动安装（如需要）并启动海斗工具
     mainWindowUi:
       title: 主界面
       background:

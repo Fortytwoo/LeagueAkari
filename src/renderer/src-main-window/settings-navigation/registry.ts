@@ -136,6 +136,23 @@ const targetDefinitions = [
     searchable: false
   },
   {
+    id: 'app.haidou-tools',
+    route: { tab: 'basic' },
+    labelKey: 'settings.app.haidouTools.title',
+    searchable: false
+  },
+  {
+    id: 'app.haidou-tools.launch-on-start',
+    route: { tab: 'basic' },
+    parentId: 'app.haidou-tools',
+    prepareStep: {
+      key: APP_SETTINGS_NAVIGATION_STEP_KEY,
+      payload: 'windows-only' satisfies AppSettingsNavigationPayload
+    },
+    labelKey: 'settings.app.haidouTools.launchOnStart.label',
+    descriptionKey: 'settings.app.haidouTools.launchOnStart.description'
+  },
+  {
     id: 'app.self-update.auto-check',
     route: { tab: 'basic' },
     parentId: 'app.self-update',

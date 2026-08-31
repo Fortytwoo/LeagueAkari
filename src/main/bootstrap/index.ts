@@ -21,6 +21,7 @@ import { KeyboardShortcutsMain } from '@main/shards/keyboard-shortcuts'
 import { LeagueClientMain } from '@main/shards/league-client'
 import { LeagueClientUxMain } from '@main/shards/league-client-ux'
 import { LoggerFactoryMain } from '@main/shards/logger-factory'
+import { LolHexGuideMain } from '@main/shards/lolhexguide'
 import { MainWindowUiMain } from '@main/shards/main-window-ui'
 import { MobxUtilsMain } from '@main/shards/mobx-utils'
 import { OngoingGameMain } from '@main/shards/ongoing-game'
@@ -325,6 +326,7 @@ export function bootstrap() {
 
     // application specific shards
     manager.use(ClientInstallationMain)
+    manager.use(LolHexGuideMain)
     manager.use(WindowManagerMain)
     manager.use(MainWindowUiMain)
     manager.use(TrayMain)

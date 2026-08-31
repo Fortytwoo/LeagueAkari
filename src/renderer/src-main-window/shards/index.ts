@@ -17,6 +17,7 @@ import { KeyboardShortcutsRenderer } from '@renderer-shared/shards/keyboard-shor
 import { LeagueClientRenderer } from '@renderer-shared/shards/league-client'
 import { LeagueClientUxRenderer } from '@renderer-shared/shards/league-client-ux'
 import { LoggerRenderer } from '@renderer-shared/shards/logger'
+import { LolHexGuideRenderer } from '@renderer-shared/shards/lolhexguide'
 import { OngoingGameRenderer } from '@renderer-shared/shards/ongoing-game'
 import { PiniaMobxUtilsRenderer } from '@renderer-shared/shards/pinia-mobx-utils'
 import { RendererDebugRenderer } from '@renderer-shared/shards/renderer-debug'
@@ -57,6 +58,7 @@ manager.use(LeagueClientPeekRenderer)
 manager.use(LeagueClientRenderer)
 manager.use(LeagueClientUxRenderer)
 manager.use(LoggerRenderer)
+manager.use(LolHexGuideRenderer)
 manager.use(MainWindowUiRenderer)
 manager.use(PlayerTabsRenderer)
 manager.use(OngoingGameRenderer)
