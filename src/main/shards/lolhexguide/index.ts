@@ -1,4 +1,4 @@
-import { IAkariShardInitDispose, Shard } from '@shared/akari-shard'
+import { IAkariShardInitDispose, Shard, SharedGlobalShard } from '@shared/akari-shard'
 import { z } from 'zod'
 
 import { AkariIpcMain } from '../ipc'
@@ -28,7 +28,8 @@ export class LolHexGuideMain implements IAkariShardInitDispose {
     private readonly _ipc: AkariIpcMain,
     _loggerFactory: LoggerFactoryMain,
     _settingFactory: SettingFactoryMain,
-    private readonly _mobxUtils: MobxUtilsMain
+    private readonly _mobxUtils: MobxUtilsMain,
+    private readonly _shared: SharedGlobalShard
   ) {
     this._logger = _loggerFactory.create(LolHexGuideMain.id)
     this._settingService = _settingFactory.register(
@@ -46,7 +47,8 @@ export class LolHexGuideMain implements IAkariShardInitDispose {
       ipc: this._ipc,
       logger: this._logger,
       mobxUtils: this._mobxUtils,
-      settings: this.settings
+      settings: this.settings,
+      shared: this._shared
     }
     this._executor = new LolHexGuideExecutor(this._context)
     this._ipcHandlers = new LolHexGuideIpcHandlers(this._context, this._executor)

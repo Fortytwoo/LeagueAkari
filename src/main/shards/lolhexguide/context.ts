@@ -1,3 +1,5 @@
+import type { SharedGlobalShard } from '@shared/akari-shard'
+
 import type { AkariIpcMain } from '../ipc'
 import type { AkariLogger } from '../logger-factory'
 import type { MobxUtilsMain } from '../mobx-utils'
@@ -11,4 +13,5 @@ export interface LolHexGuideMainContext {
   logger: AkariLogger
   mobxUtils: MobxUtilsMain
   settings: LolHexGuideSettings
+  shared: SharedGlobalShard
 }

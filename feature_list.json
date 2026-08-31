@@ -27,7 +27,7 @@
         "The App settings page persists a launch-with-League-Akari option through the existing typed SQLite settings system.",
         "Type checks, tests, visual QA, and a Windows package smoke check pass with evidence recorded."
       ],
-      "evidence": "2026-08-31: generated a 147,655,406-byte integrity-checked LOLHEXGuide 00.00.00.38 resource split into 78,643,200-byte and 69,012,206-byte Git volumes; added Windows-only main/renderer shards, a localized Haidou Tools sidebar action beside Automation, and a launch-on-start App setting stored as lolhexguide-main/launchOnAkariStart in LeagueAkari.db; type checks and Vitest passed (100 files, 566 tests); development restart proved persistence and automatic launch; development and packaged-app CDP smoke checks launched the application and prevented duplicate GameBoxServer instances; yarn build:win produced dist/League Akari-1.5.2-beta-win.7z (239,112,909 bytes), packaged volume hashes matched the source manifest, and split extraction reproduced the expected launcher SHA-256."
+      "evidence": "2026-08-31: original bundle, sidebar, settings, persistence, development, package, and push checks passed. Follow-up fix confirmed GameBoxServer.exe declares requireAdministrator; non-elevated League Akari now launches through the existing elevation helper with the required environment, while elevated processes keep the direct spawn path and EACCES also triggers an elevation fallback. The elevation helper smoke test returned 0 and launched the full process tree; Node/Web type checks, 100 test files and 567 tests, yarn build:win, and a packaged-app launch smoke test passed. Final package size: 239,114,414 bytes."
     }
   ]
 }

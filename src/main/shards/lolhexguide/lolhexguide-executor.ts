@@ -1,6 +1,7 @@
 import extractorPath from '@resources/bundled/lolhexguide/7za.exe?asset&asarUnpack'
 import archivePart1Path from '@resources/bundled/lolhexguide/lolhexguide-00.00.00.38.7z.001?asset&asarUnpack'
 import archivePart2Path from '@resources/bundled/lolhexguide/lolhexguide-00.00.00.38.7z.002?asset&asarUnpack'
+import elevateExecutablePath from '@resources/elevate.exe?asset&asarUnpack'
 import type { LolHexGuideLaunchResult, LolHexGuideStatus } from '@shared/types/lolhexguide'
 import { app } from 'electron'
 import { execFile, spawn } from 'node:child_process'
@@ -11,7 +12,7 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 
 import type { LolHexGuideMainContext } from './context'
-import { shouldAllowLolHexGuide } from './platform'
+import { shouldAllowLolHexGuide, shouldElevateLolHexGuideLaunch } from './platform'
 import { LOLHEXGUIDE_RESOURCE_MANIFEST as manifest } from './resource-manifest'
 
 const execFileAsync = promisify(execFile)
@@ -134,16 +135,40 @@ export class LolHexGuideExecutor {
     }
   }
 
-  private _spawnLauncher(executablePath: string, workingDirectory: string) {
+  private async _spawnLauncher(executablePath: string, workingDirectory: string) {
+    const environment = {
+      ...process.env,
+      hy_launcher_verify: '0',
+      hy_launcher_chain: '539298071'
+    }
+
+    if (shouldElevateLolHexGuideLaunch(this._context.shared.global.isElevated)) {
+      await this._spawnElevatedLauncher(executablePath, workingDirectory, environment)
+      return
+    }
+
+    try {
+      await this._spawnDetachedLauncher(executablePath, workingDirectory, environment)
+    } catch (error) {
+      if (!this._isAccessDeniedError(error)) {
+        throw error
+      }
+
+      this._context.logger.warn('Direct Haidou Tools launch was denied; retrying with elevation')
+      await this._spawnElevatedLauncher(executablePath, workingDirectory, environment)
+    }
+  }
+
+  private _spawnDetachedLauncher(
+    executablePath: string,
+    workingDirectory: string,
+    environment: NodeJS.ProcessEnv
+  ) {
     return new Promise<void>((resolve, reject) => {
       const child = spawn(executablePath, [], {
         cwd: workingDirectory,
         detached: true,
-        env: {
-          ...process.env,
-          hy_launcher_verify: '0',
-          hy_launcher_chain: '539298071'
-        },
+        env: environment,
         stdio: 'ignore',
         windowsHide: true
       })
@@ -155,6 +180,24 @@ export class LolHexGuideExecutor {
         resolve()
       })
     })
+  }
+
+  private async _spawnElevatedLauncher(
+    executablePath: string,
+    workingDirectory: string,
+    environment: NodeJS.ProcessEnv
+  ) {
+    this._context.logger.info('Requesting elevation to launch Haidou Tools', { executablePath })
+    await execFileAsync(elevateExecutablePath, [executablePath], {
+      cwd: workingDirectory,
+      env: environment,
+      windowsHide: true
+    })
+    this._context.logger.info('Requested elevated Haidou Tools launch', { executablePath })
+  }
+
+  private _isAccessDeniedError(error: unknown): error is NodeJS.ErrnoException {
+    return error instanceof Error && 'code' in error && error.code === 'EACCES'
   }
 
   private async _isAlreadyRunning() {

@@ -21,6 +21,8 @@
 - Added a localized `海斗工具` sidebar quick action immediately after Automation.
 - Added a typed App settings row whose value is stored in `LeagueAkari.db` under
   `lolhexguide-main/launchOnAkariStart`.
+- Fixed normal-user launches by routing `GameBoxServer.exe` through the existing elevation helper;
+  direct spawn remains for an already elevated League Akari process.
 - Verified the development app and packaged app through the configured CDP workflow.
 
 ## Verification Evidence
@@ -35,9 +37,10 @@
 | Diff hygiene         | `git diff --check`                | Passed  | No whitespace errors.                      |
 | Full native install  | `yarn install --immutable`        | Blocked | Visual Studio C++ workload not detected.   |
 | LOLHEXGuide resource | prepare script and `7za t`        | Passed  | 216 files; archive SHA-256 recorded.       |
-| Full test suite      | `yarn test`                       | Passed  | 100 files and 566 tests.                   |
+| Full test suite      | `yarn test`                       | Passed  | 100 files and 567 tests.                   |
 | Settings persistence | toggle, restart, inspect          | Passed  | Value restored and auto-launch executed.   |
-| Windows package      | `yarn build:win`                  | Passed  | 239,112,909-byte 7z artifact.              |
+| Elevation smoke      | `elevate.exe GameBoxServer.exe`   | Passed  | Exit 0; complete process tree launched.    |
+| Windows package      | `yarn build:win`                  | Passed  | 239,114,414-byte 7z artifact.              |
 | Packaged smoke       | CDP sidebar launch                | Passed  | Launch succeeded; settings row visible.    |
 
 ## Files Changed

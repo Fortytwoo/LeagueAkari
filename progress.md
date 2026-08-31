@@ -18,7 +18,7 @@
 
 ## What's In Progress
 
-- Nothing. `bundled-lolhexguide-001` is complete.
+- Nothing. The non-elevated Haidou Tools launch fix is complete.
 
 ## What's Next
 
@@ -49,6 +49,8 @@
   resource and compatibility namespace.
 - Store `launchOnAkariStart` in the typed SQLite settings system under
   `lolhexguide-main/launchOnAkariStart`, not in early bootstrap `base-config.json`.
+- `GameBoxServer.exe` declares `requireAdministrator`; use the existing elevation helper when League
+  Akari is not elevated, preserve the launcher environment, and retain `EACCES` fallback handling.
 
 ## Files Modified This Session
 
@@ -72,7 +74,7 @@
 - Full `yarn install --immutable` — blocked before typecheck/test because `better-sqlite3` requires a
   Visual Studio C++ workload; exact boundary is documented above and in `session-handoff.md`.
 - `yarn typecheck:node` and `yarn typecheck:web` — passed.
-- `yarn test` — passed: 100 files, 566 tests.
+- `yarn test` — passed: 100 files, 567 tests.
 - Development-mode CDP smoke test — `海斗工具` appears directly beside `自动操作`; clicking it
   launched `GameBoxServer.exe` plus the LOLHEXGuide Electron process tree.
 - Settings persistence smoke test — changed `lolhexguide-main/launchOnAkariStart` from false to
@@ -80,7 +82,11 @@
   the test value to false.
 - Packaged-app CDP smoke test — sidebar launcher and App settings row are visible and functional;
   repeat click kept one `GameBoxServer.exe` instance.
-- `yarn build:win` — passed; created `dist/League Akari-1.5.2-beta-win.7z` (239,112,909 bytes).
+- Non-elevated launch-path smoke — elevation helper returned 0 and launched the full
+  `GameBoxServer.exe` / `lolhexguide.exe` process tree with required environment variables.
+- Fix package smoke — elevated direct launch passed from the packaged application; no `EACCES` was
+  logged and nine Haidou Tools processes were observed.
+- `yarn build:win` — passed; created `dist/League Akari-1.5.2-beta-win.7z` (239,114,414 bytes).
 - Package inspection — final archive contains both LOLHEXGuide volumes (78,643,200 and 69,012,206
   bytes) and the 7-Zip extractor; packaged and source volume SHA-256 values match the resource
   manifest.

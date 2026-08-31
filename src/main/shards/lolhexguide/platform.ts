@@ -8,3 +8,10 @@ export function shouldLaunchLolHexGuideOnStartup(
 ) {
   return enabled && shouldAllowLolHexGuide(platform)
 }
+
+export function shouldElevateLolHexGuideLaunch(
+  isElevated: boolean,
+  platform: NodeJS.Platform = process.platform
+) {
+  return shouldAllowLolHexGuide(platform) && !isElevated
+}
